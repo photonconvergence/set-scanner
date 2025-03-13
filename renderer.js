@@ -549,7 +549,7 @@ function setChannelGrids () {
         myChart.config.options.scales.xAxes[3].labels[last_data_point] = '|';
 }
 
-function setVendorChannels ( presets, bank ) {
+function setVendorChannels ( presets ) {
     if ( !presets )
         return;
     
@@ -560,31 +560,30 @@ function setVendorChannels ( presets, bank ) {
         chDispValShadowArr = [];
     }
 
-    for ( let i = 0 ; i < presets.length ; i++ ) {
-        let left_freq_edge  = presets[i]*1000 - SENNHEISER_CHANNEL_WIDTH/2;
-        let right_freq_edge = presets[i]*1000 + SENNHEISER_CHANNEL_WIDTH/2;
+    for (var f of presets) {
+        let offset = (f.width*100000)/2; //check this multiplier. Might be incorrect for specifying channel widths in Mhz. is Mhz even the correct unit?
+        let left_freq_edge = f.center*1000 - offset;
+        let right_freq_edge = f.center*1000 + offset;
+        log.info("Left Edge "+left_freq_edge+" Right Edge "+right_freq_edge+" Offset "+offset);
 
-        if ( !isInRange ( left_freq_edge, right_freq_edge) )
+        if (!isInRange (left_freq_edge, right_freq_edge))
             continue;
 
-        let left_data_point  = alignToBoundary ( Math.round ( (left_freq_edge  - global.START_FREQ) / FREQ_STEP ) );
-        let right_data_point = alignToBoundary ( Math.round ( (right_freq_edge - global.START_FREQ) / FREQ_STEP ) );
+        let left_data_point = alignToBoundary  ( Math.round ((left_freq_edge  - global.START_FREQ) / FREQ_STEP));
+        let right_data_point = alignToBoundary ( Math.round ((right_freq_edge - global.START_FREQ) / FREQ_STEP));
 
         if ( right_data_point === left_data_point && right_data_point < global.SWEEP_POINTS - 1)
             right_data_point++;
-        
+
         chDispValShadowArr.push ([left_data_point, right_data_point, false]); // Last param shows if congested or not
 
-        let data_point       = left_data_point;
-        let f = presets[i].toString().split('');
-        f.splice ( 3, 0, "." );
-        f = f.join ( '' );
-        let label_pos = left_data_point + Math.floor((right_data_point - left_data_point )/2);
-        myChart.config.options.scales.xAxes[2].labels[label_pos] = 'B'+(bank.length===1?'0':'')+bank+'.C'+(i.toString().length===1?'0':'')+(i+1)+'  ('+f+')';
+        let data_point = left_data_point;
+        let label_pos = left_data_point + Math.floor((right_data_point - left_data_point) /2);
+        myChart.config.options.scales.xAxes[2].labels[label_pos] = f.label;
 
-        while ( data_point <= right_data_point ) {
-            if ( isForbidden ( left_freq_edge, right_freq_edge ) )
-                myChart.data.datasets[LINE_CONGESTED  ].data[data_point] = global.MAX_DBM;
+        while (data_point <= right_data_point) {
+            if (isForbidden (left_freq_edge, right_freq_edge))
+                myChart.data.datasets[LINE_CONGESTED].data[data_point] = global.MAX_DBM;
             else
                 myChart.data.datasets[LINE_RECOMMENDED].data[data_point] = global.MAX_DBM;
 
@@ -1295,19 +1294,13 @@ ipcRenderer.on ( 'SET_VENDOR_4_ANALYSIS', (event, message) => {
 });
 
 ipcRenderer.on ( 'SET_CHAN_PRESET', (event, message) => {
-    let preset_arr = message.preset.split ( '_' );
-    chPreset_Vendor = preset_arr[0];
-    chPreset_Band   = preset_arr[1];
-    chPreset_Series = preset_arr[2];
-    chPreset_Preset = preset_arr[3];
+    let chPreset_Vendor = message.preset;
 
     configStore.set ( 'chPreset.vendor', chPreset_Vendor );
-    configStore.set ( 'chPreset.band'  , chPreset_Band   );
-    configStore.set ( 'chPreset.series', chPreset_Series );
-    configStore.set ( 'chPreset.preset', chPreset_Preset );
-
+    
     //myChart.config.options.scales.xAxes[2].labels = [];
-    setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series][parseInt(chPreset_Preset)-1], chPreset_Preset );
+    setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor], chPreset_Vendor);
+    log.info("Setting Vendor Channels");
     myChart.update();
 });
 
