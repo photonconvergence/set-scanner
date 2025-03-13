@@ -56,8 +56,8 @@ let globalPorts = []
 let country_code = configStore.get('country_code');
 
 if ( !country_code ) {
-    log.info ( "No country setting saved! Using default: 'DE'");
-    country_code = "DE";
+    log.info ( "No country setting saved! Using default: 'US'");
+    country_code = "US";
 }
 
 const gotLock = app.requestSingleInstanceLock()
