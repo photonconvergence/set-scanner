@@ -141,8 +141,8 @@ if ( VIS_CONGEST    === undefined ) VIS_CONGEST    = true;
 if ( VIS_TV_CHAN    === undefined ) VIS_TV_CHAN    = true;
 
 if ( !COUNTRY_CODE || !fs.existsSync ( __dirname + '/frequency_data/forbidden/FORBIDDEN_' + COUNTRY_CODE + '.json' ) ) {
-    COUNTRY_CODE = 'DE';
-    log.info ( "No country set or file with forbidden ranges for that country does not exist! Falling back to 'DE'");
+    COUNTRY_CODE = 'US';
+    log.info ( "No country set or file with forbidden ranges for that country does not exist! Falling back to 'US'");
 }
 
 if ( !COM_PORT ) {
@@ -960,7 +960,7 @@ const portOpenCb = () => {
                             let country = ''
 
                             if ( !COUNTRY_CODE || !COUNTRY_NAME) {
-                                country = "    |    Country: Germany (DE)"
+                                country = "    |    Country: United States (US)"
                             } else {
                                 country = "    |    Country: " + COUNTRY_NAME + " (" + COUNTRY_CODE + ")"
                             }
@@ -1323,15 +1323,15 @@ ipcRenderer.on ( 'SET_COUNTRY', async (event, message) => {
             'warning',
             'POPUP_CAT_INVALID_COUNTRY',
             "Country not available!",
-            'No frequency related information available for ' + message.country_label +' (' + message.country_code + ')' + '! Falling back to Germany (DE)',
+            'No frequency related information available for ' + message.country_label +' (' + message.country_code + ')' + '! Falling back to United States (US)',
             ['Ok']
         )
 
-        COUNTRY_CODE = 'DE';
-        COUNTRY_NAME = 'Germany';
+        COUNTRY_CODE = 'US';
+        COUNTRY_NAME = 'United States';
         ipcRenderer.send ('SET_COUNTRY', { country_code : COUNTRY_CODE });
 
-        log.info ( "No frequency related information available for country code: '" + message.country_code +"' => Falling back to: 'DE'");
+        log.info ( "No frequency related information available for country code: '" + message.country_code +"' => Falling back to: 'US'");
     } else {
         COUNTRY_CODE = message.country_code;
         COUNTRY_NAME = message.country_label;
