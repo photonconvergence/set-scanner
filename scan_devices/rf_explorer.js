@@ -22,7 +22,9 @@ class RFExplorer {
         GET_CONFIG: '#0C0',    // Get current configuration
         SET_CONFIG: '#0C2-F:', // Set configuration
         HOLD: '#0CH',          // Tell the device to stop sending scan data
-        SET_SWEEP_POINTS_LARGE :'#0Cj'  // Set number of sweep points up to 65536
+        SET_SWEEP_POINTS_LARGE :'#0Cj',  // Set number of sweep points up to 65536
+        SET_MODULE_MAIN: '#0CM0', // Use main radio module
+        SET_MODULE_EXP: '#0CM1'  // Use expansion radio module
     };
     static deviceEvents = {
         NAME: 'RF Explorer',
@@ -228,9 +230,11 @@ class RFExplorer {
                                     MIN_FREQ: parseInt ( res_arr[7] ) * 1000, // Minimum frequency returned in kHz thus multiply by 1000
                                     MAX_FREQ: parseInt ( res_arr[8] ) * 1000, // Maximum frequency returned in kHz thus multiply by 1000
                                     MAX_SPAN: parseInt ( res_arr[9] ) * 1000, // Maximum span returned in kHz thus multiply by 1000
-                                    MIN_SPAN: this.getMinSpan()
+                                    MIN_SPAN: this.getMinSpan(),
+                                    ACTIVE_MODULE: parseInt ( res_arr[5] )    // Radio module currently in use. 0 for main module, 1 for expansion
                                 }
                             }])
+                            global.ACTIVE_MODULE = parseInt ( res_arr[5])
                             global.MIN_FREQ = parseInt ( res_arr[7] ) * 1000
                             global.MAX_FREQ = parseInt ( res_arr[8] ) * 1000
 
@@ -241,6 +245,7 @@ class RFExplorer {
                             log.info(`    Freq Step   : ${freqStep} Hz`)
                             log.info(`    Sweep points: ${sweepPoints} Hz`)
                             log.info(`    Max Span    : ${parseInt ( res_arr[9] ) * 1000} Hz`)
+                            log.info(`    Module      : ${global.ACTIVE_MODULE}`)
                             break
 
                         case this.constructor.deviceEvents.CALIBRATION_DATA:
