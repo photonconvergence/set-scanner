@@ -33,8 +33,7 @@ let MENU_COUNTRY  = 2;
 let MENU_PORT     = 3;
 let MENU_SCAN_DEVICE = 4;
 let MENU_TOOLS    = 5;
-let MENU_TEST     = 6;
-let MENU_HELP     = 7;
+let MENU_HELP     = 6;
 
 if ( process.platform === 'darwin') {
     MENU_BAND     = 1;
@@ -43,8 +42,7 @@ if ( process.platform === 'darwin') {
     MENU_PORT     = 4;
     MENU_SCAN_DEVICE = 5;
     MENU_TOOLS    = 6;
-    MENU_TEST     = 7;
-    MENU_HELP     = 8;
+    MENU_HELP     = 7;
 }
 
 let mainWindow;
@@ -288,23 +286,6 @@ function createWindow () {
         }
     ]};
     menuJSON.push ( toolsMenuJSON );
-
-    // Add Test Menu
-    //menuJSON.push ({ label: 'Test', submenu: [] });
-    //menuJSON[MENU_TEST].submenu.push ({ label : 'Test Text' });
-    //Object.entries (FREQ_TEST).forEach ( testFreqData => {
-    //    let key    = testFreqData[0];
-    //    //let value  = testFreqData[1];
-    //    menuJSON[MENU_TEST].submenu.push (
-    //        {
-    //           'label'  : key,
-    //       //     'code'   : value,
-    //            'type'   : 'checkbox',
-    //             click () {wc.send ("SET_TEST_PRESET", { test_vendor : key}); }
-    //        }
-    //       );
-    //       //log.info ("Test_Vendor " + key + " , Test_Channels " + JSON.stringify(value, ["label"]));
-    //});
 
     // Add help menu
     var helpMenuJSON = { label: 'Help', submenu: [
