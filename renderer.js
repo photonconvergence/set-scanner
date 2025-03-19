@@ -39,6 +39,7 @@ global.MAX_FREQ     = undefined
 global.MIN_SPAN     = undefined
 global.MAX_SPAN     = undefined
 global.SWEEP_POINTS = 100 // default value
+global.EXP_ACTIVE   = undefined
 var COM_PORT = undefined
 var VENDOR_ID    = 'NON'
 
@@ -140,8 +141,8 @@ if ( VIS_CONGEST    === undefined ) VIS_CONGEST    = true;
 if ( VIS_TV_CHAN    === undefined ) VIS_TV_CHAN    = true;
 
 if ( !COUNTRY_CODE || !fs.existsSync ( __dirname + '/frequency_data/forbidden/FORBIDDEN_' + COUNTRY_CODE + '.json' ) ) {
-    COUNTRY_CODE = 'DE';
-    log.info ( "No country set or file with forbidden ranges for that country does not exist! Falling back to 'DE'");
+    COUNTRY_CODE = 'US';
+    log.info ( "No country set or file with forbidden ranges for that country does not exist! Falling back to 'US'");
 }
 
 if ( !COM_PORT ) {
@@ -549,7 +550,7 @@ function setChannelGrids () {
         myChart.config.options.scales.xAxes[3].labels[last_data_point] = '|';
 }
 
-function setVendorChannels ( presets, bank ) {
+function setVendorChannels ( presets ) {
     if ( !presets )
         return;
     
@@ -560,31 +561,30 @@ function setVendorChannels ( presets, bank ) {
         chDispValShadowArr = [];
     }
 
-    for ( let i = 0 ; i < presets.length ; i++ ) {
-        let left_freq_edge  = presets[i]*1000 - SENNHEISER_CHANNEL_WIDTH/2;
-        let right_freq_edge = presets[i]*1000 + SENNHEISER_CHANNEL_WIDTH/2;
+    for (var f of presets) {
+        let offset = (f.width*100000)/2; //check this multiplier. Might be incorrect for specifying channel widths in Mhz. is Mhz even the correct unit?
+        let left_freq_edge = f.center*1000 - offset;
+        let right_freq_edge = f.center*1000 + offset;
+        //log.info("Left Edge "+left_freq_edge+" Right Edge "+right_freq_edge+" Offset "+offset);
 
-        if ( !isInRange ( left_freq_edge, right_freq_edge) )
+        if (!isInRange (left_freq_edge, right_freq_edge))
             continue;
 
-        let left_data_point  = alignToBoundary ( Math.round ( (left_freq_edge  - global.START_FREQ) / FREQ_STEP ) );
-        let right_data_point = alignToBoundary ( Math.round ( (right_freq_edge - global.START_FREQ) / FREQ_STEP ) );
+        let left_data_point = alignToBoundary  ( Math.round ((left_freq_edge  - global.START_FREQ) / FREQ_STEP));
+        let right_data_point = alignToBoundary ( Math.round ((right_freq_edge - global.START_FREQ) / FREQ_STEP));
 
         if ( right_data_point === left_data_point && right_data_point < global.SWEEP_POINTS - 1)
             right_data_point++;
-        
+
         chDispValShadowArr.push ([left_data_point, right_data_point, false]); // Last param shows if congested or not
 
-        let data_point       = left_data_point;
-        let f = presets[i].toString().split('');
-        f.splice ( 3, 0, "." );
-        f = f.join ( '' );
-        let label_pos = left_data_point + Math.floor((right_data_point - left_data_point )/2);
-        myChart.config.options.scales.xAxes[2].labels[label_pos] = 'B'+(bank.length===1?'0':'')+bank+'.C'+(i.toString().length===1?'0':'')+(i+1)+'  ('+f+')';
+        let data_point = left_data_point;
+        let label_pos = left_data_point + Math.floor((right_data_point - left_data_point) /2);
+        myChart.config.options.scales.xAxes[2].labels[label_pos] = f.label;
 
-        while ( data_point <= right_data_point ) {
-            if ( isForbidden ( left_freq_edge, right_freq_edge ) )
-                myChart.data.datasets[LINE_CONGESTED  ].data[data_point] = global.MAX_DBM;
+        while (data_point <= right_data_point) {
+            if (isForbidden (left_freq_edge, right_freq_edge))
+                myChart.data.datasets[LINE_CONGESTED].data[data_point] = global.MAX_DBM;
             else
                 myChart.data.datasets[LINE_RECOMMENDED].data[data_point] = global.MAX_DBM;
 
@@ -654,8 +654,8 @@ function updateChart () {
     setForbidden    ();
     setChannelGrids ();
 
-    if ( FREQ_VENDOR_PRESETS [chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series] && chPreset_Vendor && chPreset_Band && chPreset_Series && chPreset_Preset)
-        setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series][parseInt(chPreset_Preset)-1], chPreset_Preset );
+    if ( FREQ_VENDOR_PRESETS [chPreset_Vendor] && chPreset_Vendor )
+        setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor]);
 
     myChart.update();
 }
@@ -960,7 +960,7 @@ const portOpenCb = () => {
                             let country = ''
 
                             if ( !COUNTRY_CODE || !COUNTRY_NAME) {
-                                country = "    |    Country: Germany (DE)"
+                                country = "    |    Country: United States (US)"
                             } else {
                                 country = "    |    Country: " + COUNTRY_NAME + " (" + COUNTRY_CODE + ")"
                             }
@@ -1295,19 +1295,13 @@ ipcRenderer.on ( 'SET_VENDOR_4_ANALYSIS', (event, message) => {
 });
 
 ipcRenderer.on ( 'SET_CHAN_PRESET', (event, message) => {
-    let preset_arr = message.preset.split ( '_' );
-    chPreset_Vendor = preset_arr[0];
-    chPreset_Band   = preset_arr[1];
-    chPreset_Series = preset_arr[2];
-    chPreset_Preset = preset_arr[3];
+    let chPreset_Vendor = message.preset;
 
     configStore.set ( 'chPreset.vendor', chPreset_Vendor );
-    configStore.set ( 'chPreset.band'  , chPreset_Band   );
-    configStore.set ( 'chPreset.series', chPreset_Series );
-    configStore.set ( 'chPreset.preset', chPreset_Preset );
-
+    
     //myChart.config.options.scales.xAxes[2].labels = [];
-    setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series][parseInt(chPreset_Preset)-1], chPreset_Preset );
+    setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor], chPreset_Vendor);
+    log.info("Setting Vendor Channels");
     myChart.update();
 });
 
@@ -1329,15 +1323,15 @@ ipcRenderer.on ( 'SET_COUNTRY', async (event, message) => {
             'warning',
             'POPUP_CAT_INVALID_COUNTRY',
             "Country not available!",
-            'No frequency related information available for ' + message.country_label +' (' + message.country_code + ')' + '! Falling back to Germany (DE)',
+            'No frequency related information available for ' + message.country_label +' (' + message.country_code + ')' + '! Falling back to United States (US)',
             ['Ok']
         )
 
-        COUNTRY_CODE = 'DE';
-        COUNTRY_NAME = 'Germany';
+        COUNTRY_CODE = 'US';
+        COUNTRY_NAME = 'United States';
         ipcRenderer.send ('SET_COUNTRY', { country_code : COUNTRY_CODE });
 
-        log.info ( "No frequency related information available for country code: '" + message.country_code +"' => Falling back to: 'DE'");
+        log.info ( "No frequency related information available for country code: '" + message.country_code +"' => Falling back to: 'US'");
     } else {
         COUNTRY_CODE = message.country_code;
         COUNTRY_NAME = message.country_label;
@@ -1814,44 +1808,13 @@ document.addEventListener ( "wheel", async e => {
                 zoom(25) // Zoom in by removing 25% of span on both sides ( = 50% )
             }
         } else if ( e.deltaX < 0 ) { // Move left
-            if ( e.ctrlKey && !e.shiftKey ) { // Toggle vendor specific channel presets/banks down
-                if ( chPreset_Preset > 1 ) {
-                    chPreset_Preset--;
-                    log.info (`Toggle vendor specific channel presets/banks down. Now is: ${chPreset_Preset}`)
-
-                    if ( FREQ_VENDOR_PRESETS [chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series] && chPreset_Vendor && chPreset_Band && chPreset_Series && chPreset_Preset)
-                        setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series][parseInt(chPreset_Preset)-1], chPreset_Preset );
-                    myChart.update();
-                } else {
-                    log.error(`Unable to toggle vendor specific channel presets/banks down! Already on preset ${chPreset_Preset}!`)
-                }
-                return;
-            } else if ( !e.shiftKey && !e.ctrlKey ) {
+            if ( !e.shiftKey && !e.ctrlKey ) {
                 move(-10); // Move frequency band to LEFT by 10% of span
             } else if ( e.shiftKey && !e.ctrlKey ) {
                 move(-50); // Move frequency band to LEFT by 50% of span
             }
         } else if ( e.deltaX > 0 ) { // Move right
-            if ( e.ctrlKey && !e.shiftKey ) { // Toggle vendor specific channel presets/banks up
-                if ( chPreset_Vendor && chPreset_Band && chPreset_Series && chPreset_Preset && FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series] ) {
-                    if ( chPreset_Preset <  FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series].length ) {
-                        chPreset_Preset++;
-                        log.info (`Toggle vendor specific channel presets/banks up. Now is: ${chPreset_Preset}`)
-                        setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series][parseInt(chPreset_Preset)-1], chPreset_Preset );
-                        myChart.update();
-                    } else {
-                        log.error(`Unable to toggle vendor specific channel presets/banks up! Only ${FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series].length} presets available!`)
-                    }
-                } else {
-                    log.error("Unable to toggle vendor specific channel presets/banks up!")
-                    log.error(`chPreset_Vendor: ${chPreset_Vendor}`)
-                    log.error(`chPreset_Band: ${chPreset_Band}`)
-                    log.error(`chPreset_Series: ${chPreset_Series}`)
-                    log.error(`chPreset_Preset: ${chPreset_Preset}`)
-                    log.error(`FREQ_VENDOR_PRESETS [chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series]: ${FREQ_VENDOR_PRESETS [chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series]}`)
-                }
-                return;
-            } else if ( !e.shiftKey && !e.ctrlKey ) {
+            if ( !e.shiftKey && !e.ctrlKey ) {
                 move(10); // Move frequency band to RIGHT by 10% of span
             } else if ( e.shiftKey && !e.ctrlKey ) {
                 move(50); // Move frequency band to RIGHT by 50% of span
@@ -1923,19 +1886,7 @@ document.addEventListener ( "keydown", async e => {
                 } else {
                     switch ( e.key ) {
                         case 'ArrowLeft': // Arrow left
-                            if ( e.ctrlKey && !e.shiftKey ) { // Toggle vendor specific channel presets/banks down
-                                if ( chPreset_Preset > 1 ) {
-                                    chPreset_Preset--;
-                                    log.info (`Toggle vendor specific channel presets/banks down. Now is: ${chPreset_Preset}`)
-
-                                    if ( FREQ_VENDOR_PRESETS [chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series] && chPreset_Vendor && chPreset_Band && chPreset_Series && chPreset_Preset)
-                                        setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series][parseInt(chPreset_Preset)-1], chPreset_Preset );
-                                    myChart.update();
-                                } else {
-                                    log.error(`Unable to toggle vendor specific channel presets/banks down! Already on preset ${chPreset_Preset}!`)
-                                }
-                                return;
-                            } else if ( e.shiftKey && !e.ctrlKey ) {
+                            if ( e.shiftKey && !e.ctrlKey ) {
                                 move(-50); // Move frequency band to LEFT by 50% of span
                             } else if ( !e.shiftKey && !e.ctrlKey ) {
                                 move(-10); // Move frequency band to LEFT by 10% of span
@@ -1945,26 +1896,7 @@ document.addEventListener ( "keydown", async e => {
                             break;
 
                         case 'ArrowRight': // Arrow right
-                            if ( e.ctrlKey && !e.shiftKey ) { // Toggle vendor specific channel presets/banks up
-                                if ( chPreset_Vendor && chPreset_Band && chPreset_Series && chPreset_Preset && FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series] ) {
-                                    if ( chPreset_Preset <  FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series].length ) {
-                                        chPreset_Preset++;
-                                        log.info (`Toggle vendor specific channel presets/banks up. Now is: ${chPreset_Preset}`)
-                                        setVendorChannels ( FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series][parseInt(chPreset_Preset)-1], chPreset_Preset );
-                                        myChart.update();
-                                    } else {
-                                        log.error(`Unable to toggle vendor specific channel presets/banks up! Only ${FREQ_VENDOR_PRESETS[chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series].length} presets available!`)
-                                    }
-                                } else {
-                                    log.error("Unable to toggle vendor specific channel presets/banks up!")
-                                    log.error(`chPreset_Vendor: ${chPreset_Vendor}`)
-                                    log.error(`chPreset_Band: ${chPreset_Band}`)
-                                    log.error(`chPreset_Series: ${chPreset_Series}`)
-                                    log.error(`chPreset_Preset: ${chPreset_Preset}`)
-                                    log.error(`FREQ_VENDOR_PRESETS [chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series]: ${FREQ_VENDOR_PRESETS [chPreset_Vendor+'_'+chPreset_Band+'_'+chPreset_Series]}`)
-                                }
-                                return;
-                            } else if ( e.shiftKey && !e.ctrlKey ) {
+                            if ( e.shiftKey && !e.ctrlKey ) {
                                 move(50); // Move frequency band to RIGHT by 50% of span
                             } else if ( !e.shiftKey && !e.ctrlKey ) {
                                 move(10); // Move frequency band to RIGHT by 10% of span

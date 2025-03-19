@@ -54,15 +54,15 @@ let globalPorts = []
 let country_code = configStore.get('country_code');
 
 if ( !country_code ) {
-    log.info ( "No country setting saved! Using default: 'DE'");
-    country_code = "DE";
+    log.info ( "No country setting saved! Using default: 'US'");
+    country_code = "US";
 }
 
 const gotLock = app.requestSingleInstanceLock()
     
 if ( !gotLock ) {
     app.quit()
-} else { // This applies to the first instance of the applicatoin which has got the lock
+} else { // This applies to the first instance of the application which has got the lock
     app.on ( 'second-instance', (event, commandLine, workingDirectory ) => {
         // Someone tried to run a second instance, we should focus our window.
         if ( mainWindow ) {
@@ -139,7 +139,7 @@ function createWindow () {
 
     if ( process.platform === 'darwin' )
         menuJSON.push ({ label: 'App Menu', submenu: [{ role: 'quit'}] })
-    
+
     // Add bands
     menuJSON.push ({ label: 'Band', submenu: [] });
     menuJSON[MENU_BAND].submenu.push ({ label : 'Manual input             F', click () { wc.send ( 'SHOW_MANUAL_BAND_SETTINGS') }});
@@ -184,43 +184,14 @@ function createWindow () {
     // Add channel presets
     menuJSON.push ({ label: 'Chan. Presets', submenu: [] });
     Object.entries ( FREQ_VENDOR_PRESETS ).forEach ( vendorPreset => {
-        let key        = vendorPreset[0].split("_");
-        let preset     = vendorPreset[1];
-        let vendor_idx = undefined;
-        let band_idx   = undefined;
-        let series_idx = undefined;
-
-        vendor_idx = menuJSON[MENU_CHANNELS].submenu.findIndex ( ( elem ) => { return elem.label === key[0]; });
-
-        if ( vendor_idx === -1 ) // Does this vendor already exists as a submenu?
-            vendor_idx = menuJSON[MENU_CHANNELS].submenu.push ({ label: key[0], submenu: [] }) - 1;
-        
-        band_idx = menuJSON[MENU_CHANNELS].submenu[vendor_idx].submenu.findIndex ( ( elem ) => { return elem.label === key[1] + " - Band"; });
-        
-        if ( band_idx === -1 ) // Does this band already exist in this vendor submenu?
-            band_idx = menuJSON[MENU_CHANNELS].submenu[vendor_idx].submenu.push ({ label: key[1] + " - Band", submenu: [] }) - 1;
-
-        if ( key[2] !== "NONE" ) {
-            series_idx = menuJSON[MENU_CHANNELS].submenu[vendor_idx].submenu[band_idx].submenu.findIndex ( ( elem ) => { return elem.label === key[2]; });
-        
-            if ( series_idx ) // Does this series already exist in this band submenu?
-                series_idx = menuJSON[MENU_CHANNELS].submenu[vendor_idx].submenu[band_idx].submenu.push ({ label: key[2], submenu: [] }) - 1;
-        }
-
-        preset.forEach ( (bank, i) => {
-            if ( key[2] !== "NONE" ) {
-                menuJSON[MENU_CHANNELS].submenu[vendor_idx].submenu[band_idx].submenu[series_idx].submenu.push ({
-                    label: "Bank " + (i+1),
-                    click () { wc.send ( "SET_CHAN_PRESET", { preset: vendorPreset[0] + "_" + (i+1) }); }
-                });
-            } else {
-                menuJSON[MENU_CHANNELS].submenu[vendor_idx].submenu[band_idx].submenu.push ({
-                    label: "Bank " + (i+1),
-                    click () { wc.send ( "SET_CHAN_PRESET", { preset: vendorPreset[0] + "_" + (i+1) }); }
-                });
+        let key        = vendorPreset[0];
+        menuJSON[MENU_CHANNELS].submenu.push (
+            {
+                'label'  : key,
+                 click () {wc.send ("SET_CHAN_PRESET", {preset:key}); }
             }
+        );
         });
-    });
 
     // Add countries
     menuJSON.push ({ label: 'Country', submenu: [] });

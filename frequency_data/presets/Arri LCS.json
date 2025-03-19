@@ -1,0 +1,16 @@
+[
+    {"label": "0"    , "center": "2410000"  , "width": "8"},
+    {"label": "1"    , "center": "2415000"  , "width": "8"},
+    {"label": "2"    , "center": "2430000"  , "width": "8"},
+    {"label": "3"    , "center": "2435000"  , "width": "8"},
+    {"label": "4"    , "center": "2450000"  , "width": "8"},
+    {"label": "5"    , "center": "2455000"  , "width": "8"},
+    {"label": "6"    , "center": "2470000"  , "width": "8"},
+    {"label": "7"    , "center": "2475000"  , "width": "8"},
+    {"label": "8"    , "center": "2420000"  , "width": "8"},
+    {"label": "9"    , "center": "2425000"  , "width": "8"},
+    {"label": "10"   , "center": "2440000"  , "width": "8"},
+    {"label": "11"   , "center": "2445000"  , "width": "8"},
+    {"label": "12"   , "center": "2460000"  , "width": "8"},
+    {"label": "13"   , "center": "2465000"  , "width": "8"}
+]
