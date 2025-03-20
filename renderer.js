@@ -43,8 +43,6 @@ global.EXP_ACTIVE   = undefined
 var COM_PORT = undefined
 var VENDOR_ID    = 'NON'
 
-const SENNHEISER_CHANNEL_WIDTH   = 96000 // +/-48kHz Spitzenhub
-
 let isExecuting = false
 var port = null
 let globalPorts = []
