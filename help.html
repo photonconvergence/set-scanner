@@ -5,7 +5,6 @@
     <style type="text/css">
 
         table th {
-            padding: 0;
             padding: 5pt 5pt 5pt 5pt;
             vertical-align: center;
             border: 1px solid #666666;
@@ -14,13 +13,14 @@
             font-family: arial;
         }
         table td {
-            padding: 0;
-            padding: 5pt 5pt 5pt 5pt;
+            padding-left: 5pt;
+            padding-right: 5pt;
             vertical-align: center;
             border: 1px solid #666666;
             background-color: white;
             width: 203.1pt;
             font-family: arial;
+            height: 45pt;
         }
 
         .c16 {
@@ -31,7 +31,7 @@
             margin-left: auto;
             border-spacing: 0;
             border-collapse: collapse;
-            margin-right: auto
+            margin-right: auto;
         }
 
         .c31 {
@@ -107,27 +107,26 @@
 
 <body class="c31">
     <p class="main">
-        <span>Wireless Microphone Analyzer</span>
+        <span>Set Scanner</span>
     </p>
     <p>
-        <span>The Wireless Microphone Analyzer shows the frequency spectrum captured via the <b>RF Explorer</b>&nbsp;or the <b>TinySA (Ultra)</b>&nbsp;hardware and overlays additional important information like forbidden frequency ranges,
-            recommended/congested manufacturer channels and the old TV channel grid. It is thought to help audio
-            engineers dealing with wireless microphones to easily discover free frequencies for their events.</span>
+        <span>Set Scanner shows the frequency spectrum captured via the <b>RF Explorer</b>&nbsp;or the <b>TinySA (Ultra)</b>&nbsp;hardware and overlays additional important information like forbidden frequency ranges,
+            recommended/congested manufacturer channels and the old TV channel grid. It is designed to help Camera Assistants and DITs find free and congested channels on a film set.</span>
     </p>
     <p>
         <span>The following overlays/selections for the live graph are available:</span>
     </p>
     <ul class="c10">
         <li>
-            Wireless microphone vendors have defined specific frequency ranges for their equipment
-            which have vendor specific names. The app allows to preselect these vendor specific bands. E.g. if you
-            own a &quot;Sennheiser WE 100 G3&quot; in Sennheiser&#39;s E-Band, you can select exactly this frequency
+            Equipment manufacturers have defined specific frequency ranges for their equipment.
+            The app allows to preselect these vendor specific bands. E.g. if you
+            are using a Preston with a G4 radio, you can select exactly this frequency
             range to be shown on the screen.
         </li>
         <li>
             Some vendors also offer pre-calculated intermodulation free channel maps for their
             equipment. If available these channel presets can be overlayed as well by selecting the corresponding
-            vendor/device/channel map. Details like channel bank and channel number are shown on top of the chart in
+            vendor/device/channel map. Details like channel name and channel number are shown on top of the chart in
             green.
         </li>
         <li>
@@ -154,7 +153,7 @@
     <p>
         <span>The real-time graph works in &quot;peak hold&quot; mode. That means that the highest level
             detected for a certain frequency is kept. There is also a red line at -85dBm which commonly seems to be a
-            maximum noise level which can be tolerated for wireless microphones. The peak line can be reset either via
+            maximum noise level which can be tolerated for interference-free operation. The peak line can be reset either via
             the menu or by pressing the <b>&quot;R&quot;</b> key. </span>
     </p>
     <p>
