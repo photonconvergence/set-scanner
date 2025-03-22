@@ -1,9 +1,9 @@
 <p align="center">
-<img src="images/microphone-wave_FOR_README.png">
+<img src="images/set_scanner_readme.png" width="200px">
 </p>
 
-# Wireless Microphone Analyzer
-The Wireless Microphone Analyzer shows the frequency spectrum captured with the "RF Explorer" or "tinySA" hardware. Wireless microphone vendors (e.g. Sennheiser, Shure etc.) have defined specific frequency ranges for their equipment which they gave proprietary names. This tool allows you to preselect these bands. E.g. if you bought a "Sennheiser EW 100 G3" in Sennheiser's E-Band, you can select this range in the app, to check whether and were there are any interferences. You can also also overlay the vendor recommended channel frequency presets, which are optimized by vendors and guarantee a intermodulation free operation of multiple microphones in parallel. The app also shows forbidden frequency ranges in red. E.g. LTE up-/downstream ranges which meanwhile overlap with old microphone frequency bands.
+# Set Scanner
+Set Scanner is a fork of <a href="https://github.com/berkon/wireless-microphone-analyzer">Wireless Microphone Analyzer by Bernd Konnerth</a> optimized for film set camera departments. Set Scanner shows the frequency spectrum captured with the "RF Explorer" or "tinySA" hardware and overlays additional important information like forbidden frequency ranges, recommended/congested manufacturer channels and the old TV channel grid. It is designed to help Camera Assistants and DITs find free or congested wireless channels on a film set. Equipment manufacturers have defined specific frequency ranges for their equipment. The app allows preselecting these vendor specific bands. E.g. if you are using a Preston with a G4 radio, you can select exactly this frequency range to be shown on the screen.
 
 <p align="center">
 <img src="images/screenshot.png">

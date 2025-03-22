@@ -1,17 +1,18 @@
 {
-  "name": "wireless-microphone-analyzer",
-  "productName": "Wireless Microphone Analyzer",
+  "name": "set-scanner",
+  "productName": "Set Scanner",
   "version": "2.3.0",
-  "license": "CC0-1.0",
-  "description": "Uses RF-Explorer or TinySA spectrum analyzer hardware to check for free/congested wireless microphone frequencies",
-  "author": "Bernd Konnerth <bernd@konnerth.de>",
+  "license": "MIT",
+  "description": "Uses RF-Explorer or TinySA spectrum analyzer hardware to check for free/congested wireless frequencies",
+  "author": "Photonconvergence, Bernd Konnerth <bernd@konnerth.de>",
   "main": "main.js",
   "repository": "https://github.com/berkon/wireless-microphone-analyzer",
   "keywords": [
     "wireless",
-    "microphone",
+    "film",
     "spectrum",
-    "analyzer"
+    "analyzer",
+    "camera"
   ],
   "devDependencies": {
     "@kayahr/jest-electron-runner": "^29.14.0",
@@ -67,13 +68,13 @@
     "test": "jest --silent"
   },
   "build": {
-    "appId": "wireless-microphone-analyzer",
+    "appId": "set-scanner",
     "win": {
       "target": "nsis",
-      "icon": "build/microphone-wave.ico"
+      "icon": "build/set_scanner.ico"
     },
     "linux": {
-      "icon": "./build/icons",
+      "icon": "./build/set_scanner_512.png",
       "category": "Utility",
       "target": [
         "AppImage",
@@ -82,7 +83,7 @@
     },
     "mac": {
       "target": "dmg",
-      "icon": "build/microphone-wave.png"
+      "icon": "build/set_scanner_logo.png"
     }
   }
 }

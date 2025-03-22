@@ -41,9 +41,6 @@ global.MAX_SPAN     = undefined
 global.SWEEP_POINTS = 100 // default value
 global.EXP_ACTIVE   = undefined
 var COM_PORT = undefined
-var VENDOR_ID    = 'NON'
-
-const SENNHEISER_CHANNEL_WIDTH   = 96000 // +/-48kHz Spitzenhub
 
 let isExecuting = false
 var port = null
@@ -1269,30 +1266,6 @@ function setBand ( startFreq, stopFreq, details) {
     showWaitIndicator()
     scanDevice.setConfiguration ( global.START_FREQ, global.STOP_FREQ, global.SWEEP_POINTS )
 }
-
-ipcRenderer.on ( 'SET_VENDOR_4_ANALYSIS', (event, message) => {
-    switch ( message.vendor ) {
-        case 'NON': // No vendor selected
-            VENDOR_ID = 'NON';
-
-            for ( let i = 0 ; i < global.SWEEP_POINTS ; i++ )
-                myChart.data.datasets[LINE_RECOMMENDED].data[i] = undefined;
-
-            myChart.update();
-            break;
-
-        case 'SEN': // Sennheiser
-            VENDOR_ID = 'SEN';
-            break;
-
-        case 'SHU': // Shure
-            VENDOR_ID = 'SHU';
-            break;
-        
-        default:
-            log.info ( "Vendor missing in message!")
-    }
-});
 
 ipcRenderer.on ( 'SET_CHAN_PRESET', (event, message) => {
     let chPreset_Vendor = message.preset;
