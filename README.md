@@ -3,7 +3,7 @@
 </p>
 
 # Set Scanner
-Set Scanner shows the frequency spectrum captured with the "RF Explorer" or "tinySA" hardware and overlays additional important information like forbidden frequency ranges, recommended/congested manufacturer channels and the old TV channel grid. It is designed to help Camera Assistants and DITs find free and congested channels on a film set. Equipment manufacturers have defined specific frequency ranges for their equipment. The app allows to preselect these vendor specific bands. E.g. if you are using a Preston with a G4 radio, you can select exactly this frequency range to be shown on the screen.
+Set Scanner is a fork of <a href="https://github.com/berkon/wireless-microphone-analyzer">Wireless Microphone Analyzer by Bernd Konnerth</a> optimized for film set camera departments. Set Scanner shows the frequency spectrum captured with the "RF Explorer" or "tinySA" hardware and overlays additional important information like forbidden frequency ranges, recommended/congested manufacturer channels and the old TV channel grid. It is designed to help Camera Assistants and DITs find free or congested wireless channels on a film set. Equipment manufacturers have defined specific frequency ranges for their equipment. The app allows preselecting these vendor specific bands. E.g. if you are using a Preston with a G4 radio, you can select exactly this frequency range to be shown on the screen.
 
 <p align="center">
 <img src="images/screenshot.png">
