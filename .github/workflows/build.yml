@@ -13,6 +13,7 @@ jobs:
     - uses: actions/setup-node@master
       with:
         node-version: 14
+        architecture: 'x64'
     - name: install dependencies
       run: npm ci
     - name: publish
