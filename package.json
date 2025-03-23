@@ -6,7 +6,7 @@
   "description": "Uses RF-Explorer or TinySA spectrum analyzer hardware to check for free/congested wireless frequencies",
   "author": "Photonconvergence, Bernd Konnerth <bernd@konnerth.de>",
   "main": "main.js",
-  "repository": "https://github.com/berkon/wireless-microphone-analyzer",
+  "repository": "https://github.com/photonconvergence/set-scanner",
   "keywords": [
     "wireless",
     "film",
