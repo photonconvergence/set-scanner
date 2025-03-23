@@ -167,7 +167,7 @@ var chDispValShadowArr = [];
 var myChart = null
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('donate-button').addEventListener ('click', () => openDonateWindow() )
+    // document.getElementById('donate-button').addEventListener ('click', () => openDonateWindow() )
 
     if (DARK_MODE) {
         document.getElementsByTagName('body')[0].setAttribute('class', 'dark-mode')
