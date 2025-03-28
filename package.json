@@ -72,7 +72,7 @@
     "dist": "electron-builder --config .electron-builder.config.js",
     "test:debug": "jest",
     "test": "jest --silent",
-    "updateVersion": "semantic-release"
+    "updateVersion": "semantic-release --branches master"
   },
   "build": {
     "appId": "set-scanner",
