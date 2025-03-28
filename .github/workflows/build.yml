@@ -2,6 +2,16 @@ name: Build
 on: pull_request
 
 jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@master
+      with:
+        node-version: 23
+        architecture: 'x64'
+    - name: unit tests
+      run: npm run test
   build:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -16,8 +26,6 @@ jobs:
         architecture: 'x64'
     - name: install dependencies
       run: npm ci
-    - name: unit tests
-      run: npm run test
     - name: build
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
