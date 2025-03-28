@@ -69,7 +69,7 @@
     "install_start": "npm install && node_modules\\electron\\dist\\electron.exe .",
     "build": "electron-builder --publish never",
     "pack": "build --dir",
-    "dist": "electron-builder --config .electron-builder.config.js",
+    "dist": "electron-builder",
     "test:debug": "jest",
     "test": "jest --silent",
     "updateVersion": "semantic-release --branches master"
