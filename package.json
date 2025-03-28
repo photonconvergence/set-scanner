@@ -1,7 +1,7 @@
 {
   "name": "set-scanner",
   "productName": "Set Scanner",
-  "version": "2.3.0",
+  "version": "1.0.0",
   "license": "MIT",
   "description": "Uses RF-Explorer or TinySA spectrum analyzer hardware to check for free/congested wireless frequencies",
   "author": "Photonconvergence, Bernd Konnerth <bernd@konnerth.de>",
