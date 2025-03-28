@@ -7,7 +7,7 @@
   "author": "Photonconvergence, Bernd Konnerth <bernd@konnerth.de>",
   "main": "main.js",
   "repository": "https://github.com/photonconvergence/set-scanner",
-  "private": "true",
+  "private": true,
   "keywords": [
     "wireless",
     "film",
