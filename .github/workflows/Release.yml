@@ -22,7 +22,7 @@ jobs:
             - run: npm ci
               env:
                   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-            - run: npx semantic-release --dry-run
+            - run: npx semantic-release --dry-run --branches master
               id: get-next-version
               env:
                   GITHUB_TOKEN: ${{ secrets.github_token }}
