@@ -16,9 +16,14 @@
   ],
   "devDependencies": {
     "@kayahr/jest-electron-runner": "^29.14.0",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^12.0.1",
     "electron": "^34.2.0",
     "electron-builder": "^24.13.3",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "semantic-release": "^24.2.3",
+    "semantic-release-export-data": "^1.1.0"
   },
   "dependencies": {
     "@electron/remote": "^2.1.1",
@@ -64,9 +69,10 @@
     "install_start": "npm install && node_modules\\electron\\dist\\electron.exe .",
     "build": "electron-builder --publish never",
     "pack": "build --dir",
-    "dist": "electron-builder",
+    "dist": "electron-builder --config .electron-builder.config.js",
     "test:debug": "jest",
-    "test": "jest --silent"
+    "test": "jest --silent",
+    "updateVersion": "semantic-release"
   },
   "build": {
     "appId": "set-scanner",
