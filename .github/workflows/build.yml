@@ -10,6 +10,8 @@ jobs:
       with:
         node-version: 23
         architecture: 'x64'
+    - name: Install Dependencies
+      run: npm install
     - name: unit tests
       run: npm run test
   build:
