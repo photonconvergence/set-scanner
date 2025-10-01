@@ -10,5 +10,17 @@
     {"label": "Bolt 5670", "center": "5670000", "width": "20"},
     {"label": "Bolt 5690 (AUS)", "center": "5690000", "width": "20"},
     {"label": "Bolt 5755", "center": "5755000", "width": "20"},
-    {"label": "Bolt 5795", "center": "5795000", "width": "20"}
+    {"label": "Bolt 5795", "center": "5795000", "width": "20"},
+    {"label": "Bolt 5965", "center": "5965000", "width": "20"},
+    {"label": "Bolt 6005", "center": "6005000", "width": "20"},
+    {"label": "Bolt 6045", "center": "6045000", "width": "20"},
+    {"label": "Bolt 6085", "center": "6085000", "width": "20"},
+    {"label": "Bolt 6125", "center": "6125000", "width": "20"},
+    {"label": "Bolt 6165", "center": "6165000", "width": "20"},
+    {"label": "Bolt 6205", "center": "6205000", "width": "20"},
+    {"label": "Bolt 6245", "center": "6245000", "width": "20"},
+    {"label": "Bolt 6285", "center": "6285000", "width": "20"},
+    {"label": "Bolt 6325", "center": "6325000", "width": "20"},
+    {"label": "Bolt 6365", "center": "6365000", "width": "20"},
+    {"label": "Bolt 6405", "center": "6405000", "width": "20"}
 ]
